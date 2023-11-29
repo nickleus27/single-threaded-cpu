@@ -1,6 +1,8 @@
 #include <queue>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
+#include <limits>
 
 class Solution
 {
@@ -12,6 +14,7 @@ public:
             return l[1] == r[1] ? l[2] > r[2] : l[1] > r[1];
         }
     } heap_compare;
+
     struct
     {
         bool operator()(const std::vector<int> &l, std::vector<int> &r)
@@ -19,6 +22,7 @@ public:
             return l[0] < r[0];
         }
     } sort_compare;
+
     std::vector<int> getOrder(std::vector<std::vector<int>> &tasks)
     {
         int i = 0;
@@ -63,14 +67,44 @@ public:
 
 int main()
 {
-    std::vector<std::vector<int>> tasks = {{19, 13}, {16, 9}, {21, 10}, {32, 25}, {37, 4}, {49, 24}, {2, 15}, {38, 41}, {37, 34}, {33, 6}, {45, 4}, {18, 18}, {46, 39}, {12, 24}};
+    char c;
+    int number;
+    std::string line;
+    std::vector<std::vector<int>> tasks;
     Solution sol;
-    std::vector<int> order = sol.getOrder(tasks);
-    std::cout << "[ ";
-    for (const auto &pair : order)
+
+    std::cout << "Copy and past Testcases from LeetCode or enter Testcases with the exact same format Ex: [[1,2],[2,4],[3,2],[4,1]]" << std::endl;
+
+    std::getline(std::cin, line);
+    std::istringstream stream(line);
+
+    stream.ignore(std::numeric_limits<std::streamsize>::max(), '[');
+    while (stream.ignore(std::numeric_limits<std::streamsize>::max(), '['))
     {
-        std::cout << pair << ", ";
+        std::vector<int> pair;
+        for (int i = 0; i < 2; i++)
+        {
+            stream >> number;
+            stream.ignore(std::numeric_limits<std::streamsize>::max(), ',');
+            pair.push_back(number);
+        }
+        tasks.push_back(pair);
+    }
+    std::cout << "The results for " << std::endl;
+    std::cout << "[";
+    for (const auto &pair: tasks)
+    {
+        std::cout << "[" << pair[0] << "," << pair[1] << "],";
     }
     std::cout << "]" << std::endl;
+    std::cout << "are: [";
+
+    std::vector<int> order = sol.getOrder(tasks);
+    for (const auto &event: order)
+    {
+        std::cout << event << ",";
+    }
+    std::cout << "]" << std::endl;
+    // std::cout << "The order the tasks will be scheduled: " << sol.getOrder(tasks) << std::endl;
     return 0;
 }
